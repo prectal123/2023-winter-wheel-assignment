@@ -1,2 +1,56 @@
 # Write docker-compose file here
 # For instructions, see https://github.com/SnowSuno/wheel-assignment-solution#2-docker-composeyml-%EC%9E%91%EC%84%B1
+
+version: "1"
+
+services:
+  taxi-front:
+    container_name: taxi-front
+    restart: always
+    build: ./client
+    ports:
+      - "80:80"
+    environment:
+      - REACT_APP_BACK_URL = "https://taxi.sparcs.org/api"
+      - REACT_APP_S3_URL = ${QWERQWER}
+    networks:
+      - backbone
+
+  taxi-back:
+    container_name: taxi-back
+    restart: always
+    build: ./server
+    ports:
+      - 81:80
+    depends_on:
+      - taxi-mongo
+    environment:
+      - SESSION_KEY = "MY-SEMINAR"
+      - SPARCSSSO_CLIENT_ID =
+      - SPARCSSSO_CLIENT_KEY =
+      - FRONT_URL = "https://taxi.sparcs.org"
+      - AWS_ACCESS_KRY_ID = "AWS 파면 줌"
+      - AWS_SECRET_ACCESS_KEY = "AWS 파면 줌"
+      - AWS_S3_BUCKET_NAME = "S3 파면 줌"
+      - DB_PATH = "mongodb://root:I_Hate_OS@taxi-mongo:27017/taxi"
+    networks:
+      - backbone
+      
+  nginx:
+    constainer_name: nginx-test
+    image: nginx
+    ports:
+      - 443:443
+    networks:
+      - backbone
+
+  taxi-mongo:
+    container_name: taxi-mongo
+    restart: always
+    image: mongo:4.4
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: "root"
+      MONGO_INITDB_ROOT_PASSWORD: "I_Hate_OS"
+
+networks:
+  backbone:
